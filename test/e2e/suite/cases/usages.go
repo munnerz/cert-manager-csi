@@ -17,6 +17,7 @@ limitations under the License.
 package cases
 
 import (
+	"context"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -51,6 +52,7 @@ var _ = framework.CasesDescribe("Should set key usages correctly", func() {
 						"csi.cert-manager.io/common-name":  "foo-bar",
 						"csi.cert-manager.io/key-usages":   "signing,digital signature,content commitment,key encipherment,key agreement,data encipherment",
 					},
+					ReadOnly: util.BoolPointer(true),
 				},
 			},
 		}
@@ -81,14 +83,14 @@ var _ = framework.CasesDescribe("Should set key usages correctly", func() {
 		}
 
 		By("Creating a Pod")
-		testPod, err := f.KubeClientSet.CoreV1().Pods(f.Namespace.Name).Create(testPod)
+		testPod, err := f.KubeClientSet.CoreV1().Pods(f.Namespace.Name).Create(context.TODO(), testPod, metav1.CreateOptions{})
 		Expect(err).NotTo(HaveOccurred())
 
 		By("Waiting for Pod to become ready")
 		err = f.Helper().WaitForPodReady(f.Namespace.Name, testPod.Name, time.Second*10)
 		Expect(err).NotTo(HaveOccurred())
 
-		testPod, err = f.KubeClientSet.CoreV1().Pods(f.Namespace.Name).Get(testPod.Name, metav1.GetOptions{})
+		testPod, err = f.KubeClientSet.CoreV1().Pods(f.Namespace.Name).Get(context.TODO(), testPod.Name, metav1.GetOptions{})
 		Expect(err).NotTo(HaveOccurred())
 
 		By("Ensure the corresponding CertificateRequest should exist with the correct spec")

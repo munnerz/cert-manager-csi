@@ -24,7 +24,7 @@ import (
 	"strconv"
 	"strings"
 
-	cmapi "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1alpha2"
+	cmapi "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/kind/pkg/cluster/nodes"
@@ -119,7 +119,7 @@ func (h *Helper) MetaDataCertificateKeyExistInHostPath(cr *cmapi.CertificateRequ
 	return h.CertificateKeyMatch(cr, certData, keyData)
 }
 
-func (h *Helper) readFile(node *nodes.Node, path string) ([]byte, error) {
+func (h *Helper) readFile(node nodes.Node, path string) ([]byte, error) {
 	// TODO (@joshvanl): use tar compression
 	execOut, execErr := new(bytes.Buffer), new(bytes.Buffer)
 	cmd := node.Command("cat", path)
@@ -134,7 +134,7 @@ func (h *Helper) readFile(node *nodes.Node, path string) ([]byte, error) {
 	return execOut.Bytes(), nil
 }
 
-func (h *Helper) matchFilePerm(node *nodes.Node, path string, perm int) error {
+func (h *Helper) matchFilePerm(node nodes.Node, path string, perm int) error {
 	execOut, execErr := new(bytes.Buffer), new(bytes.Buffer)
 
 	cmd := node.Command("stat", "-c", "\"%a\"", path)

@@ -35,6 +35,7 @@ import (
 	"github.com/jetstack/cert-manager-csi/test/e2e/framework/helper"
 	"github.com/jetstack/cert-manager-csi/test/e2e/framework/testdata"
 	"github.com/jetstack/cert-manager-csi/test/e2e/framework/util"
+	csiutil "github.com/jetstack/cert-manager-csi/pkg/util"
 )
 
 // DefaultConfig contains the default shared config the is likely parsed from
@@ -156,6 +157,7 @@ func (f *Framework) RandomPod() *corev1.Pod {
 				CSI: &corev1.CSIVolumeSource{
 					Driver:           csi.GroupName,
 					VolumeAttributes: f.testdata.RandomVolumeAttributes(),
+					ReadOnly: csiutil.BoolPointer(true),
 				},
 			},
 		}
